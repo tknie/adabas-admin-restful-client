@@ -162,7 +162,7 @@ func CommandQueue(clientInstance *client.AdabasAdmin, dbid int, auth runtime.Cli
 	fmt.Println()
 	fmt.Printf(" %3s  %-8s  %-8s  %-10s  %-3s  %-8s  %-8s\n", "No", "Node Id", "Login Id", "ES Id", "Cmd", "File", "Status")
 	for _, c := range resp.Payload.CommandQueue.Commands {
-		fmt.Printf(" %3d  %-8s  %-8s  %-10d  %-3s  %-8d  %-s\n", c.CommID, c.User.Node, c.User.Terminal, c.User.ID, c.CommandCode, c.File, c.Flags)
+		fmt.Printf(" %3d  %-8s  %-8s  %-10d  %-3s  %-8d  %-s\n", c.CommID, c.User.Node, c.User.Terminal, c.User.ID, c.CommandCode, c.File, c.Status)
 	}
 	return nil
 }
