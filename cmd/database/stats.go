@@ -21,6 +21,7 @@ package database
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/go-openapi/runtime"
 	"golang.org/x/text/language"
@@ -34,7 +35,7 @@ func Highwater(clientInstance *client.AdabasAdmin, dbid int, auth runtime.Client
 	params := online.NewGetDatabaseHighWaterParams()
 	rfc3339 := true
 	params.Rfc3339 = &rfc3339
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	resp, err := clientInstance.Online.GetDatabaseHighWater(params, auth)
 	if err != nil {
 		switch err.(type) {
@@ -136,7 +137,7 @@ func CommandStats(clientInstance *client.AdabasAdmin, dbid int, auth runtime.Cli
 // BufferpoolStats buffer pool statistics
 func BufferpoolStats(clientInstance *client.AdabasAdmin, dbid int, auth runtime.ClientAuthInfoWriter) error {
 	params := online.NewGetDatabaseBPStatsParams()
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	resp, err := clientInstance.Online.GetDatabaseBPStats(params, auth)
 	if err != nil {
 		switch err.(type) {

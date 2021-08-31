@@ -22,6 +22,7 @@ package database
 import (
 	"bytes"
 	"fmt"
+	"strconv"
 
 	"github.com/go-openapi/runtime"
 	"golang.org/x/text/language"
@@ -36,7 +37,7 @@ func Fields(clientInstance *client.AdabasAdmin, dbid int, fnr int, auth runtime.
 	params := online_offline.NewGetFieldDefinitionTableParams()
 	rfc3339 := true
 	params.Rfc3339 = &rfc3339
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	params.File = float64(fnr)
 	resp, err := clientInstance.OnlineOffline.GetFieldDefinitionTable(params, auth)
 	if err != nil {
@@ -87,7 +88,7 @@ func Fields(clientInstance *client.AdabasAdmin, dbid int, fnr int, auth runtime.
 // AddFields add Adabas fields
 func AddFields(clientInstance *client.AdabasAdmin, dbid int, fnr int, fdt string, auth runtime.ClientAuthInfoWriter) error {
 	params := online_offline.NewModifyFieldDefinitionTableParams()
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	params.File = float64(fnr)
 	params.Addfields = fdt
 	fmt.Println("Add fields", fdt)

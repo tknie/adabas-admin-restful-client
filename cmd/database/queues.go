@@ -33,7 +33,7 @@ func UserQueue(clientInstance *client.AdabasAdmin, dbid int, auth runtime.Client
 	params := online.NewGetDatabaseUserQueueParams()
 	rfc3339 := true
 	params.Rfc3339 = &rfc3339
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 
 	resp, err := clientInstance.Online.GetDatabaseUserQueue(params, auth)
 	if err != nil {
@@ -62,7 +62,7 @@ func UserQueue(clientInstance *client.AdabasAdmin, dbid int, auth runtime.Client
 // UserDetails retrieve user queue entry details
 func UserDetails(clientInstance *client.AdabasAdmin, dbid int, param string, auth runtime.ClientAuthInfoWriter) error {
 	params := online.NewGetUserQueueDetailParams()
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	qid, qerr := strconv.Atoi(param)
 	if qerr != nil {
 		return qerr
@@ -81,7 +81,7 @@ func UserDetails(clientInstance *client.AdabasAdmin, dbid int, param string, aut
 		return err
 	}
 	fmt.Println()
-	userDetails := resp.Payload.UserQueueDetail.DetailEntry[0]
+	userDetails := resp.Payload.UserQueueDetails.DetailEntry
 	fmt.Printf(" Got user queue details of queue id %v:\n", userDetails.UqID)
 	fmt.Printf("%20s : %s\n", "User", userDetails.User)
 	fmt.Printf("%20s :\n", "Adabas ID")
@@ -91,22 +91,22 @@ func UserDetails(clientInstance *client.AdabasAdmin, dbid int, param string, aut
 	fmt.Printf("%21s : %s\n", " Timestamp", userDetails.UID.Timestamp)
 	fmt.Printf("%20s : %s\n", "Flags", userDetails.Flags)
 	fmt.Printf("%20s : %s\n", "ET Flags", userDetails.EtFlags)
-	fmt.Printf("%20s : %s\n", "Start session", resp.Payload.StartSession)
-	fmt.Printf("%20s : %s\n", "Start transaction", resp.Payload.StartTransaction)
-	fmt.Printf("%20s : %s\n", "Last activity", resp.Payload.LastActivity)
-	fmt.Printf("%20s : %d\n", "TT Limit", resp.Payload.TTLimit)
-	fmt.Printf("%20s : %d\n", "TNA Limit", resp.Payload.TNALimit)
-	fmt.Printf("%20s : %d\n", "ISN lists", resp.Payload.ISNLists)
-	fmt.Printf("%20s : %d\n", "ISN in hold", resp.Payload.ISNHold)
+	fmt.Printf("%20s : %s\n", "Start session", resp.Payload.UserQueueDetails.StartSession)
+	fmt.Printf("%20s : %s\n", "Start transaction", resp.Payload.UserQueueDetails.StartTransaction)
+	fmt.Printf("%20s : %s\n", "Last activity", resp.Payload.UserQueueDetails.LastActivity)
+	fmt.Printf("%20s : %d\n", "TT Limit", resp.Payload.UserQueueDetails.TTLimit)
+	fmt.Printf("%20s : %d\n", "TNA Limit", resp.Payload.UserQueueDetails.TNALimit)
+	fmt.Printf("%20s : %d\n", "ISN lists", resp.Payload.UserQueueDetails.ISNLists)
+	fmt.Printf("%20s : %d\n", "ISN in hold", resp.Payload.UserQueueDetails.ISNHold)
 	fmt.Printf("%20s :\n", "Files in use")
 	for f := range resp.Payload.Files {
 		if f > 0 {
 			fmt.Printf("%20s : %d\n", " ", f)
 		}
 	}
-	fmt.Printf("%20s : %d\n", "Command count:", resp.Payload.CommandCount)
-	fmt.Printf("%20s : %d\n", "Transaction count:", resp.Payload.TransactionCount)
-	fmt.Printf("%20s : %d\n", "User encoding:", resp.Payload.UserEncoding)
+	fmt.Printf("%20s : %d\n", "Command count:", resp.Payload.UserQueueDetails.CommandCount)
+	fmt.Printf("%20s : %d\n", "Transaction count:", resp.Payload.UserQueueDetails.TransactionCount)
+	fmt.Printf("%20s : %d\n", "User encoding:", resp.Payload.UserQueueDetails.UserEncoding)
 	fmt.Println()
 	return nil
 }
@@ -114,7 +114,7 @@ func UserDetails(clientInstance *client.AdabasAdmin, dbid int, param string, aut
 // DeleteUser stop user
 func DeleteUser(clientInstance *client.AdabasAdmin, dbid int, param string, auth runtime.ClientAuthInfoWriter) error {
 	params := online.NewStopUserQueueEntryParams()
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	qid, qerr := strconv.Atoi(param)
 	if qerr != nil {
 		return qerr
@@ -144,7 +144,7 @@ func CommandQueue(clientInstance *client.AdabasAdmin, dbid int, auth runtime.Cli
 	params := online.NewGetDatabaseCommandQueueParams()
 	rfc3339 := true
 	params.Rfc3339 = &rfc3339
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	resp, err := clientInstance.Online.GetDatabaseCommandQueue(params, auth)
 	if err != nil {
 		switch err.(type) {
@@ -162,7 +162,7 @@ func CommandQueue(clientInstance *client.AdabasAdmin, dbid int, auth runtime.Cli
 	fmt.Println()
 	fmt.Printf(" %3s  %-8s  %-8s  %-10s  %-3s  %-8s  %-8s\n", "No", "Node Id", "Login Id", "ES Id", "Cmd", "File", "Status")
 	for _, c := range resp.Payload.CommandQueue.Commands {
-		fmt.Printf(" %3d  %-8s  %-8s  %-10d  %-3s  %-8d  %-s\n", c.CommID, c.User.Node, c.User.Terminal, c.User.ID, c.CommandCode, c.File, c.Flags)
+		fmt.Printf(" %3d  %-8s  %-8s  %-10d  %-3s  %-8d  %-s\n", c.CommID, c.User.Node, c.User.Terminal, c.User.ID, c.CommandCode, c.File, c.Status)
 	}
 	return nil
 }
@@ -172,7 +172,7 @@ func HoldQueue(clientInstance *client.AdabasAdmin, dbid int, auth runtime.Client
 	params := online.NewGetDatabaseHoldQueueParams()
 	rfc3339 := true
 	params.Rfc3339 = &rfc3339
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	resp, err := clientInstance.Online.GetDatabaseHoldQueue(params, auth)
 	if err != nil {
 		switch err.(type) {

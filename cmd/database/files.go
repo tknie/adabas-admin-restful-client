@@ -65,7 +65,7 @@ func (il *InputList) Set(v string) error {
 // Files list database files
 func Files(clientInstance *client.AdabasAdmin, dbid int, auth runtime.ClientAuthInfoWriter) error {
 	params := online_offline.NewGetDatabaseFilesParams()
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	resp, err := clientInstance.OnlineOffline.GetDatabaseFiles(params, auth)
 	if err != nil {
 		switch err.(type) {
@@ -148,7 +148,7 @@ func File(clientInstance *client.AdabasAdmin, dbid int, fnr int, para string, au
 			}
 		}
 
-		params.Dbid = float64(dbid)
+		params.Dbid = strconv.Itoa(dbid)
 		params.FileOperation = strconv.Itoa(fnr)
 		resp, errp := clientInstance.Online.PutAdabasFileParameter(params, auth)
 		if errp != nil {
@@ -167,7 +167,7 @@ func File(clientInstance *client.AdabasAdmin, dbid int, fnr int, para string, au
 	params := online_offline.NewGetDatabaseFileParams()
 	rfc3339 := true
 	params.Rfc3339 = &rfc3339
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	params.FileOperation = strconv.Itoa(fnr)
 	resp, accept, err := clientInstance.OnlineOffline.GetDatabaseFile(params, auth)
 	if err != nil {
@@ -235,7 +235,7 @@ func File(clientInstance *client.AdabasAdmin, dbid int, fnr int, para string, au
 // RenameFile rename database file
 func RenameFile(clientInstance *client.AdabasAdmin, dbid int, fnr int, newName string, auth runtime.ClientAuthInfoWriter) error {
 	params := online.NewPutAdabasFileParameterParams()
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	params.Name = &newName
 	params.FileOperation = strconv.Itoa(fnr) + ":rename"
 	resp, err := clientInstance.Online.PutAdabasFileParameter(params, auth)
@@ -256,7 +256,7 @@ func RenameFile(clientInstance *client.AdabasAdmin, dbid int, fnr int, newName s
 // RenumberFile renumber database file
 func RenumberFile(clientInstance *client.AdabasAdmin, dbid int, fnr int, newNumber string, auth runtime.ClientAuthInfoWriter) error {
 	params := online.NewPutAdabasFileParameterParams()
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	number, err := strconv.Atoi(newNumber)
 	if err != nil {
 		fmt.Println("Error:", err)
@@ -283,7 +283,7 @@ func RenumberFile(clientInstance *client.AdabasAdmin, dbid int, fnr int, newNumb
 // RefreshFile refresh database file
 func RefreshFile(clientInstance *client.AdabasAdmin, dbid int, fnr int, auth runtime.ClientAuthInfoWriter) error {
 	params := online.NewPutAdabasFileParameterParams()
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	params.FileOperation = strconv.Itoa(fnr) + ":refresh"
 	resp, err := clientInstance.Online.PutAdabasFileParameter(params, auth)
 	if err != nil {
@@ -376,7 +376,7 @@ func CreateFile(clientInstance *client.AdabasAdmin, dbid int, fnr int, input Inp
 		return fmt.Errorf("Please add -input parameter for FDU and FDT")
 	}
 	params := online.NewCreateAdabasFileParams()
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	params.Fdufdt = createFileInstance(dbid, fnr, input)
 	if params.Fdufdt == nil {
 		return fmt.Errorf("Error parsing file")
@@ -399,7 +399,7 @@ func CreateFile(clientInstance *client.AdabasAdmin, dbid int, fnr int, input Inp
 // DeleteFile delete database file
 func DeleteFile(clientInstance *client.AdabasAdmin, dbid int, fnr int, auth runtime.ClientAuthInfoWriter) error {
 	params := online_offline.NewDeleteFileParams()
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	params.FileOperation = float64(fnr)
 	resp, err := clientInstance.OnlineOffline.DeleteFile(params, auth)
 	if err != nil {

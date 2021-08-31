@@ -92,11 +92,11 @@ func Operation(clientInstance *client.AdabasAdmin, dbid int, operation string, a
 		return err
 	}
 	if accepted != nil {
-		fmt.Printf("Database status dbid=%d %s\n", accepted.Payload.Status.Dbid, accepted.Payload.Status.Message)
+		fmt.Printf("Database status dbid=%s %s\n", accepted.Payload.Status.Target, accepted.Payload.Status.Message)
 	}
 	if resp != nil {
 		if resp.Payload.Database != nil {
-			fmt.Printf("Database status dbid=%d %s\n", resp.Payload.Database.Dbid, resp.Payload.Database.Status)
+			fmt.Printf("Database status dbid=%s %s\n", resp.Payload.Database.Dbid, resp.Payload.Database.Status)
 		} else {
 			fmt.Printf("Database operation inited successfully\n")
 		}
@@ -203,7 +203,7 @@ func Create(clientInstance *client.AdabasAdmin, dbid int, input string, auth run
 // Delete database
 func Delete(clientInstance *client.AdabasAdmin, dbid int, input string, auth runtime.ClientAuthInfoWriter) error {
 	params := offline.NewDeleteAdabasDatabaseParams()
-	params.DbidOperation = float64(dbid)
+	params.DbidOperation = int64(dbid)
 	resp, err := clientInstance.Offline.DeleteAdabasDatabase(params, auth)
 	if err != nil {
 		switch err.(type) {
@@ -259,7 +259,7 @@ func Rename(clientInstance *client.AdabasAdmin, dbid int, param string, auth run
 // NucleusLog show nucleus log
 func NucleusLog(clientInstance *client.AdabasAdmin, dbid int, auth runtime.ClientAuthInfoWriter) error {
 	params := online_offline.NewGetDatabaseNucleusLogParams()
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	resp, err := clientInstance.OnlineOffline.GetDatabaseNucleusLog(params, auth)
 	if err != nil {
 		switch err.(type) {
@@ -341,7 +341,7 @@ func Information(clientInstance *client.AdabasAdmin, dbid int, auth runtime.Clie
 // Activity database activity
 func Activity(clientInstance *client.AdabasAdmin, dbid int, auth runtime.ClientAuthInfoWriter) error {
 	params := online.NewGetDatabaseActStatsParams()
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	resp, err := clientInstance.Online.GetDatabaseActStats(params, auth)
 	if err != nil {
 		switch err.(type) {
@@ -378,7 +378,7 @@ func Activity(clientInstance *client.AdabasAdmin, dbid int, auth runtime.ClientA
 // ThreadTable display thread table
 func ThreadTable(clientInstance *client.AdabasAdmin, dbid int, auth runtime.ClientAuthInfoWriter) error {
 	params := online.NewGetDatabaseThreadTableParams()
-	params.Dbid = float64(dbid)
+	params.Dbid = strconv.Itoa(dbid)
 	resp, err := clientInstance.Online.GetDatabaseThreadTable(params, auth)
 	if err != nil {
 		switch err.(type) {
@@ -508,7 +508,7 @@ func ParameterInfo(clientInstance *client.AdabasAdmin, dbid int, auth runtime.Cl
 			default:
 				p.Printf("  Default: %14s  Configuration: %14s  Online: %14s\n", parameter.DefaultValue, parameter.InifileValue, parameter.OnlineValue)
 			}
-			if parameter.IsMinValueAvailable {
+			if *parameter.IsMinValueAvailable {
 				p.Printf("  Minimum: %14d\n", parameter.MinValue)
 			}
 			if *parameter.IsMaxValueAvailable {

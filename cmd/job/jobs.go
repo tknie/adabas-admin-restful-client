@@ -28,7 +28,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"softwareag.com/client"
 	"softwareag.com/client/scheduler"
-	"softwareag.com/models"
+	models "softwareag.com/climodels"
 )
 
 // List list the jobs
