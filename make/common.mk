@@ -68,15 +68,6 @@ $(BIN)/%: $(BIN) $(OBJECTS) ; $(info $(M) building $(REPOSITORY)…)
 
 $(BINTOOLS):
 	@mkdir -p $@
-$(BINTOOLS)/%: $(BINTOOLS) ; $(info $(M) building tool $(BINTOOLS) on $(REPOSITORY)…)
-	$Q tmp=$$(mktemp -d); \
-		(GO111MODULE=off GOPATH=$$tmp CGO_CFLAGS= CGO_LDFLAGS= \
-		go get -v $(REPOSITORY) && find $$tmp/bin -type f -exec cp {} $(BINTOOLS)/. \;) || ret=$$?; \
-		(GOPATH=$$tmp go clean -modcache ./...); \
-		rm -rf $$tmp ; exit $$ret
-
-$(BINTOOLS):
-	@mkdir -p $@
 $(BINTOOLS)/%: ; $(info $(M) building tool $(BINTOOLS) on $(REPOSITORY)…)
 	$Q tmp=$$(mktemp -d); \
 		(GOPATH=$$tmp CGO_CFLAGS= CGO_LDFLAGS= \
