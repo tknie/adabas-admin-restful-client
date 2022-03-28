@@ -15,8 +15,8 @@ info:
   license:
     name: Software AG
     url: "http://documentation.softwareag.com/legal/general_license.txt"
-  version: 7.1.0.0.01072021
-host: "localhost:8130"
+  version: 7.1.0.0.08022022
+host: "localhost:8190"
 basePath: /
 paths:
   "/login":
@@ -82,10 +82,8 @@ paths:
       description: Remove the session
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: removeSession
@@ -104,10 +102,8 @@ paths:
       description: Remove the session
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: removeSessionCompat
@@ -126,10 +122,8 @@ paths:
       description: Init shutdown procedure
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: shutdownServer
@@ -158,10 +152,8 @@ paths:
       description: Retrieves the list of environments
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: getEnvironments
@@ -184,10 +176,8 @@ paths:
       description: Retrieves the list of environments
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: getVersions
@@ -210,10 +200,8 @@ paths:
       description: Retrieves the current version
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: getVersion
@@ -232,10 +220,8 @@ paths:
       description: Retrieves the current version
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: getAdabasVersion
@@ -256,10 +242,8 @@ paths:
       description: Get adabas configuration
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: getAdabasConfig
@@ -283,11 +267,9 @@ paths:
       description: Store configuration
       consumes:
         - application/json
-        - application/xml
         - text/plain
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: setAdabasConfig
@@ -316,10 +298,8 @@ paths:
       description: Store configuration
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: storeAdabasConfig
@@ -342,10 +322,8 @@ paths:
       description: Defines the current Adabas Map repositories
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: getServerConfig
@@ -362,6 +340,32 @@ paths:
           description: Authorization error
         "403":
           description: Role access denied
+  /adabas/config/cluster:
+    get:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: Get the cluster node entries
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Environment
+      operationId: getServerConfigCluster
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/ClusterConfig"
+        "400":
+          description: Database error evaluating list
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
   /adabas/config/classic:
     get:
       security:
@@ -370,10 +374,8 @@ paths:
       description: Defines the Adabas direct access
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: getClassicConfig
@@ -397,10 +399,8 @@ paths:
       description: Add an entry for the Adabas direct access
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: pushClassicConfig
@@ -433,7 +433,6 @@ paths:
         - application/json
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       parameters:
@@ -463,10 +462,8 @@ paths:
       description: Defines the current Adabas Map repositories
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: getMappingConfig
@@ -493,7 +490,6 @@ paths:
         - application/json
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: addMappingConfig
@@ -558,10 +554,8 @@ paths:
       description: Defines the current Adabas Module section
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: getModuleConfig
@@ -585,10 +579,8 @@ paths:
       description: Set the ADADATADIR
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: setAdadataDir
@@ -598,6 +590,60 @@ paths:
           name: adadatadir
           in: query
           required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Database configuration setting fail
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
+  /adabas/config/jobs:
+    get:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: Read  Adabas job configuration section
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Environment
+      operationId: getJobsConfig
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/JobStore"
+        "400":
+          description: Database error evaluating list
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
+    put:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: Set the ADADATADIR
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Environment
+      parameters:
+        - name: jobConfig
+          in: body
+          schema:
+            $ref: "#/definitions/JobStore"
+      operationId: setJobsConfig
       responses:
         "200":
           description: OK
@@ -662,10 +708,8 @@ paths:
       description: Defines the current Adabas Module section
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: getInstallationConfig
@@ -689,10 +733,8 @@ paths:
       description: Add installation location
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: addInstallationConfig
@@ -724,10 +766,8 @@ paths:
       description: Delete the installation location
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: deleteInstallationConfig
@@ -762,10 +802,8 @@ paths:
       description: Read upload/download directories
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: getDirectoriesConfig
@@ -789,10 +827,8 @@ paths:
       description: Add directory location
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: addDirectoryConfig
@@ -829,10 +865,8 @@ paths:
       description: Delete the directory location
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: deleteDirectoryConfig
@@ -867,10 +901,8 @@ paths:
       description: Retrieve Rest server output
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Environment
       operationId: getRestServerLog
@@ -895,10 +927,8 @@ paths:
       description: Retrieve the current status of Adabas cluster
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: getCluster
@@ -923,10 +953,8 @@ paths:
       description: Retrieves a list of databases known by Adabas Interface.
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: getDatabases
@@ -950,10 +978,8 @@ paths:
       description: Create a new Adabas database
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Offline
       operationId: postAdabasDatabase
@@ -983,10 +1009,8 @@ paths:
       description: Retrieve the current status of database with the given dbid
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: databaseOperation
@@ -1022,10 +1046,8 @@ paths:
       description: Change resource of the database
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: putDatabaseResource
@@ -1039,7 +1061,27 @@ paths:
           description: Database name
           name: name
           in: query
-          required: true
+          required: false
+        - type: boolean
+          description: Enable or disable eventing
+          name: eventing
+          in: query
+          required: false
+        - type: integer
+          description: Set Write Limit
+          name: writelimit
+          in: query
+          required: false
+        - type: boolean
+          description: Lock database
+          name: lock
+          in: query
+          required: false
+        - type: boolean
+          description: External database backup (true=prepare false=continue)
+          name: externalbackup
+          in: query
+          required: false
       responses:
         "200":
           description: "Successful response, with database status"
@@ -1064,10 +1106,8 @@ paths:
       description: Initiate operations on the given dbid
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: databasePostOperations
@@ -1108,10 +1148,8 @@ paths:
       description: Delete the Adabas database
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Offline
       operationId: deleteAdabasDatabase
@@ -1142,10 +1180,8 @@ paths:
       description: Retrieve Adabas activity statistics
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: getDatabaseActStats
@@ -1172,10 +1208,8 @@ paths:
       description: Retrieve Adabas buffer pool statistics
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: getDatabaseBPStats
@@ -1202,10 +1236,8 @@ paths:
       description: Retrieve Adabas buffer flush statistics
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: getDatabaseBfStats
@@ -1232,10 +1264,8 @@ paths:
       description: Retrieve Adabas monitor statistics
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: getDatabaseMonitor
@@ -1268,10 +1298,8 @@ paths:
         dbid
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: getDatabaseCheckpoints
@@ -1305,10 +1333,8 @@ paths:
       description: Delete Adabas Checkpoints out of the database with the given dbid
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: deleteDatabaseCheckpoints
@@ -1343,10 +1369,8 @@ paths:
       description: Retrieve the current status of Adabas cluster
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: getAdabasCluster
@@ -1373,10 +1397,8 @@ paths:
       description: Retrieve a list of user queue entries
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: getDatabaseCommandQueue
@@ -1404,10 +1426,8 @@ paths:
       description: Retrieve Adabas command statistics
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: getDatabaseCommandStats
@@ -1426,6 +1446,33 @@ paths:
           description: Authorization error
         "403":
           description: Role access denied
+    delete:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: Reset Adabas command statistics
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Online
+      operationId: resetCommandStats
+      parameters:
+        - $ref: "#/parameters/targetParam"
+      responses:
+        "200":
+          description: "Successful response, with reseted Adabas command statistics"
+          schema:
+            $ref: "#/definitions/StatusResponse"
+        "400":
+          description: Database not available/unknown
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
   "/adabas/database/{dbid}/container":
     get:
       security:
@@ -1434,10 +1481,8 @@ paths:
       description: Retrieve Adabas containers
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: getDatabaseContainer
@@ -1463,10 +1508,8 @@ paths:
       description: Add a container to Adabas
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: addAdabasContainer
@@ -1497,10 +1540,8 @@ paths:
       description: Retrieve Adabas containers
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Offline
       operationId: removeDatabaseContainer
@@ -1532,10 +1573,8 @@ paths:
       description: Retrieves Adabas FDT information for a file
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: getFieldDefinitionTable
@@ -1569,10 +1608,8 @@ paths:
       description: Modify Adabas FDT information for a file
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: modifyFieldDefinitionTable
@@ -1604,10 +1641,8 @@ paths:
       description: Drop a list of fields in an Adabas file
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: dropFields
@@ -1640,10 +1675,8 @@ paths:
       description: Retrieves a list of files defined in the database
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: getDatabaseFiles
@@ -1669,10 +1702,8 @@ paths:
       description: Create a new Adabas file
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: postAdabasFile
@@ -1703,10 +1734,8 @@ paths:
       description: Retrieves Adabas FCB information for a file
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: getDatabaseFile
@@ -1715,7 +1744,7 @@ paths:
         - type: string
           description: >-
             File number and operation separated by ':' Possible operations are -
-            refresh renumber
+            refresh renumber rename addlob
           name: file_operation
           in: path
           required: true
@@ -1750,10 +1779,8 @@ paths:
       description: Adapt a  Adabas file parameter
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: putAdabasFileParameter
@@ -1812,10 +1839,8 @@ paths:
       description: Create a new Adabas file
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: createAdabasFile
@@ -1850,10 +1875,8 @@ paths:
       description: Delete the file
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: deleteFile
@@ -1885,10 +1908,8 @@ paths:
       description: Retrieve the current GCB of the database with the given dbid
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: getDatabaseGcb2
@@ -1916,10 +1937,8 @@ paths:
       description: Retrieve the current GCB of the database with the given dbid
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: getDatabaseGcb
@@ -1947,10 +1966,8 @@ paths:
       description: Retrieve a list of hold queue entries
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: getDatabaseHoldQueue
@@ -1978,10 +1995,8 @@ paths:
       description: Retrieve Adabas High water mark
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: getDatabaseHighWater
@@ -2001,6 +2016,33 @@ paths:
           description: Authorization error
         "403":
           description: Role access denied
+    delete:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: Reset Adabas high water statistics
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Online
+      operationId: resetHighWaterMarks
+      parameters:
+        - $ref: "#/parameters/targetParam"
+      responses:
+        "200":
+          description: "Successful response, with reseted Adabas Highwater Mark statistics"
+          schema:
+            $ref: "#/definitions/StatusResponse"
+        "400":
+          description: Database not available/unknown
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
   "/adabas/database/{dbid}/nuclog":
     get:
       security:
@@ -2009,20 +2051,30 @@ paths:
       description: Retrieve Adabas nucleus output
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: getDatabaseNucleusLog
       parameters:
         - $ref: "#/parameters/targetParam"
+        - type: boolean
+          description: List all available
+          name: list
+          in: query
+        - type: string
+          description: Get specific adanuc log, default is adanuc.log
+          name: name
+          in: query
       responses:
         "200":
           description: "Successful response, with Adabas Nucleus Log"
           schema:
             $ref: "#/definitions/NucleusLog"
+        "206":
+          description: "Successful response, with Adabas Nucleus Log entries"
+          schema:
+            $ref: "#/definitions/NucleusLogList"
         "400":
           description: Database not available/unknown
           schema:
@@ -2039,10 +2091,8 @@ paths:
       description: Retrieve Adabas parameters
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: getDatabaseParameter
@@ -2080,10 +2130,8 @@ paths:
         parameter
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: putAdabasParameter
@@ -2244,10 +2292,8 @@ paths:
         parameter
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: postAdabasParameter
@@ -2288,10 +2334,8 @@ paths:
       description: Retrieve Adabas parameter metadata information
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: getDatabaseParameterInfo
@@ -2310,6 +2354,278 @@ paths:
           description: Authorization error
         "403":
           description: Role access denied
+  "/adabas/database/{dbid}/plog":
+    get:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: Retrieve the current PLOG statistcs of Adabas PLOG
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Online
+      operationId: getPLOGStats
+      parameters:
+        - $ref: "#/parameters/targetParam"
+      responses:
+        "200":
+          description: "Successful response, with status of Adabas PLOG."
+          schema:
+            $ref: "#/definitions/PLOG"
+        "400":
+          description: Database error evaluating TCP list
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
+  "/adabas/database/{dbid}/permission":
+    get:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: List RBAC assignments permission
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Online
+      operationId: getAdabasRBAC
+      parameters:
+        - $ref: "#/parameters/targetParam"
+        - type: string
+          description: List type
+          name: list
+          in: query
+          enum:
+           - assignments
+           - userrole
+      responses:
+        "200":
+          description: "Successful response, with status of Adabas RBAC."
+          schema:
+            $ref: "#/definitions/RBAC"
+        "400":
+          description: Database error evaluating RBAC list
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
+    put:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: Add RBAC role
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Online
+      operationId: adaptPermission
+      parameters:
+        - $ref: "#/parameters/targetParam"
+        - name: definition
+          in: body
+          schema:
+            $ref: "#/definitions/RBACDefinition"
+      responses:
+        "200":
+          description: "Successful response, with status of Adabas RBAC."
+          schema:
+            $ref: "#/definitions/StatusResponse"
+        "400":
+          description: Database error evaluating RBAC list
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
+    delete:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: Add RBAC role
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Online
+      operationId: removePermission
+      parameters:
+        - $ref: "#/parameters/targetParam"
+        - name: definition
+          in: body
+          schema:
+            $ref: "#/definitions/RBACDefinition"
+      responses:
+        "200":
+          description: "Successful response, with status of Adabas RBAC."
+          schema:
+            $ref: "#/definitions/StatusResponse"
+        "400":
+          description: Database error evaluating RBAC list
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
+  "/adabas/database/{dbid}/permission/{resource}":
+    get:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: Add RBAC role
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Online
+      operationId: listRBACResource
+      parameters:
+        - $ref: "#/parameters/targetParam"
+        - type: string
+          description: RBAC type
+          name: resource
+          in: path
+          required: true
+          enum:
+            - Role
+            - role
+            - ROLE
+            - Object
+            - object
+            - OBJECT
+            - User
+            - user
+            - USER
+            - Operation
+            - operation
+            - OPERATION
+      responses:
+        "200":
+          description: "Successful response, with status of Adabas RBAC."
+          schema:
+            $ref: "#/definitions/RBAC"
+        "400":
+          description: Database error evaluating RBAC list
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
+  "/adabas/database/{dbid}/permission/{resource}/{name}":
+    put:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: Add RBAC role
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Online
+      operationId: addRBACResource
+      parameters:
+        - $ref: "#/parameters/targetParam"
+        - type: string
+          description: RBAC type
+          name: resource
+          in: path
+          required: true
+          enum:
+            - Role
+            - role
+            - ROLE
+            - Object
+            - object
+            - OBJECT
+            - User
+            - user
+            - USER
+            - Operation
+            - operation
+            - OPERATION
+        - type: string
+          description: resource name
+          name: name
+          in: path
+          required: true
+      responses:
+        "200":
+          description: "Successful response, with status of Adabas RBAC."
+          schema:
+            $ref: "#/definitions/StatusResponse"
+        "400":
+          description: Database error evaluating RBAC list
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
+    delete:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: Delete RBAC role
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Online
+      operationId: deleteRBACResource
+      parameters:
+        - $ref: "#/parameters/targetParam"
+        - type: string
+          description: RBAC type
+          name: resource
+          in: path
+          required: true
+          enum:
+            - Role
+            - role
+            - ROLE
+            - Object
+            - object
+            - OBJECT
+            - User
+            - user
+            - USER
+            - Operation
+            - operation
+            - OPERATION
+        - type: string
+          description: resource name
+          name: name
+          in: path
+          required: true
+      responses:
+        "200":
+          description: "Successful response, with status of Adabas RBAC."
+          schema:
+            $ref: "#/definitions/StatusResponse"
+        "400":
+          description: Database error evaluating RBAC list
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
   "/adabas/database/{dbid}/tcp":
     get:
       security:
@@ -2318,10 +2634,8 @@ paths:
       description: Retrieve the current ADATCP connection of Adabas
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: getAdabasTCP
@@ -2340,6 +2654,41 @@ paths:
           description: Authorization error
         "403":
           description: Role access denied
+    delete:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: Disconnect ADATCP connection in the database with the given dbid
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Online
+      operationId: disconnectTCP
+      parameters:
+        - $ref: "#/parameters/dbidParam"
+        - type: integer
+          description: First entry of ADATCP connection ID
+          name: start_id
+          in: query
+        - type: integer
+          description: Last entry of ADATCP connection ID
+          name: end_id
+          in: query
+      responses:
+        "200":
+          description: "Successful response, when database ADATCP connections init is send"
+          schema:
+            $ref: "#/definitions/StatusResponse"
+        "400":
+          description: Database not available
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
   "/adabas/database/{dbid}/threadtable":
     get:
       security:
@@ -2348,10 +2697,8 @@ paths:
       description: Retrieve Adabas Thread Table
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: getDatabaseThreadTable
@@ -2378,10 +2725,8 @@ paths:
       description: Retrieves Adabas UCB entries
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: getUCB
@@ -2409,10 +2754,8 @@ paths:
       description: Delete an Adabas UCB entry
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: deleteUCB
@@ -2444,10 +2787,8 @@ paths:
       description: Retrieve a list of user queue entries
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: getDatabaseUserQueue
@@ -2475,10 +2816,8 @@ paths:
       description: Provide User queue details of an specific user queue element
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: getUserQueueDetail
@@ -2510,10 +2849,8 @@ paths:
       description: Stop the User Queue element
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Online
       operationId: stopUserQueueEntry
@@ -2548,10 +2885,8 @@ paths:
       description: Retrieves a list of Adabas version installations used
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - OnlineOffline
       operationId: getDatabasesInstallation
@@ -2576,7 +2911,6 @@ paths:
       description: Retrieves a lob of a specific ISN of an field
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/octet-stream
       tags:
@@ -2796,11 +3130,9 @@ paths:
       consumes:
         #        - multipart/form-data
         - application/json
-        - application/xml
         - plain/text
       produces:
         - application/json
-        - application/xml
       tags:
         - Browser
       operationId: createDirectory
@@ -2839,7 +3171,6 @@ paths:
         - multipart/form-data
       produces:
         - application/json
-        - application/xml
         - text/plain
       tags:
         - Browser
@@ -2876,10 +3207,8 @@ paths:
       description: Delete the file on the given location
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Browser
       operationId: deleteFileLocation
@@ -2911,10 +3240,8 @@ paths:
       description: Retrieves a list of Browseable locations
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Browser
       operationId: browseList
@@ -2943,16 +3270,17 @@ paths:
       description: Retrieves a list of files in the defined location.
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Browser
       operationId: browse
       parameters:
         - $ref: "#/parameters/locationParam"
-        - $ref: "#/parameters/fileReferenceParam"
+        - type: string
+          description: Identifier of the file location
+          name: file
+          in: query
       responses:
         "200":
           description: "Successful response, with list of known databases."
@@ -3074,7 +3402,6 @@ paths:
         - multipart/form-data
       produces:
         - application/json
-        - application/xml
         - text/plain
       tags:
         - MapDatabaseAccess
@@ -3172,6 +3499,60 @@ paths:
           description: Could not read the specified field.
           schema:
             $ref: "#/definitions/Error"
+  "/video/map/{name}/{isn}/{field}":
+    get:
+      security:
+        - BasicAuth: []
+        - hasRole: [user]
+      description: Retrieves a video stream of a specific ISN of a Map definition
+      produces:
+        - video/mp4
+        - video/mov
+      tags:
+        - MapDatabaseAccess
+      operationId: getVideobyMap
+      parameters:
+        - $ref: "#/parameters/mapParam"
+        - type: string
+          description: Specific ISN number
+          name: isn
+          in: path
+          required: true
+        - type: string
+          description: Specific the field to be
+          name: field
+          in: path
+          required: true
+        - type: string
+          description: Specific the data MIME type
+          name: mimetype
+          in: query
+        - type: string
+          description: Specific the field containing the mimetype
+          name: mimetypeField
+          in: query
+          required: true
+        - $ref: "#/parameters/searchParam"
+      responses:
+        "200":
+          description: "Successful response, retrieve the video information."
+          schema:
+            type: file
+        "400":
+          description: Parameter error
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Unauthorized access
+          headers:
+            WWW_Authenticate:
+              type: string
+        "403":
+          description: The requested data was forbidden.
+        "404":
+          description: Could not read the specified field.
+          schema:
+            $ref: "#/definitions/Error"
   /rest/db:
     get:
       security:
@@ -3180,10 +3561,8 @@ paths:
       description: Retrieves a list of known databases.
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - ClassicDatabaseAccess
       operationId: getOnlineDatabases
@@ -3203,7 +3582,6 @@ paths:
                 - url: "23(tcpip://pctkn7:0)"
                 - url: "24(tcpip://pctkn7:0)"
                 - url: "25(tcpip://pctkn7:0)"
-            application/xml:
               Databases:
                 - url: "23(tcpip://pctkn7:0)"
                 - url: "24(tcpip://pctkn7:0)"
@@ -3228,10 +3606,8 @@ paths:
       description: Retrieves a list of files contained in the given database
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - ClassicDatabaseAccess
       operationId: getFiles
@@ -3272,10 +3648,8 @@ paths:
       description: Get database records of a given database and file
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - ClassicDatabaseAccess
       operationId: getClassicRecordData
@@ -3324,11 +3698,9 @@ paths:
       description: Update record data
       consumes:
         - application/json
-        - application/xml
         - text/plain
       produces:
         - application/json
-        - application/xml
       tags:
         - ClassicDatabaseAccess
       operationId: putClassicRecordData
@@ -3369,11 +3741,9 @@ paths:
       description: Insert database record
       consumes:
         - application/json
-        - application/xml
         - text/plain
       produces:
         - application/json
-        - application/xml
       tags:
         - ClassicDatabaseAccess
       operationId: postClassicRecordData
@@ -3415,10 +3785,8 @@ paths:
       description: Retrieve database record(s) of a given ISN
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - ClassicDatabaseAccess
       operationId: getClassicIsnRecordData
@@ -3472,11 +3840,9 @@ paths:
       description: Update database record of a given ISN.
       consumes:
         - application/json
-        - application/xml
         - text/plain
       produces:
         - application/json
-        - application/xml
       tags:
         - ClassicDatabaseAccess
       operationId: putClassicIsnRecordData
@@ -3522,11 +3888,9 @@ paths:
       description: Insert database record at given ISN.
       consumes:
         - application/json
-        - application/xml
         - text/plain
       produces:
         - application/json
-        - application/xml
       tags:
         - ClassicDatabaseAccess
       operationId: postClassicIsnRecordData
@@ -3572,10 +3936,8 @@ paths:
       description: Delete a specific ISN
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - ClassicDatabaseAccess
       operationId: deleteClassicIsnRecordData
@@ -3616,10 +3978,8 @@ paths:
       description: Retrieve a specific database record field data.
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - ClassicDatabaseAccess
       operationId: getClassicIsnFieldRecordData
@@ -3675,10 +4035,8 @@ paths:
       description: Update database record field
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - ClassicDatabaseAccess
       operationId: putClassicIsnFieldRecordData
@@ -3730,10 +4088,8 @@ paths:
       description: Retrieves a list of available maps
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - MapDatabaseAccess
       operationId: getMaps
@@ -3765,7 +4121,6 @@ paths:
         - multipart/form-data
       produces:
         - application/json
-        - application/xml
       tags:
         - MapDatabaseAccess
       operationId: insertMapFileRecords
@@ -3795,10 +4150,8 @@ paths:
       description: Retrieves all records of a Map definition
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - MapDatabaseAccess
       operationId: getMapRecords
@@ -3836,11 +4189,9 @@ paths:
       description: Update send records into a Map definition
       consumes:
         - application/json
-        - application/xml
         - text/plain
       produces:
         - application/json
-        - application/xml
       tags:
         - MapDatabaseAccess
       operationId: updateMapRecords
@@ -3872,11 +4223,9 @@ paths:
       description: Store send records into Map definition
       consumes:
         - application/json
-        - application/xml
         - text/plain
       produces:
         - application/json
-        - application/xml
       tags:
         - MapDatabaseAccess
       operationId: insertMapRecords
@@ -3909,10 +4258,8 @@ paths:
       description: Retrieves all records of specific ISN in a Map definition
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - MapDatabaseAccess
       operationId: getIsnSpecificRecord
@@ -3955,11 +4302,9 @@ paths:
       description: Update a record of a Map definition
       consumes:
         - application/json
-        - application/xml
         - text/plain
       produces:
         - application/json
-        - application/xml
       tags:
         - MapDatabaseAccess
       operationId: putIsnSpecificRecord
@@ -4009,11 +4354,9 @@ paths:
       description: Insert a new records of a Map definition
       consumes:
         - application/json
-        - application/xml
         - text/plain
       produces:
         - application/json
-        - application/xml
       tags:
         - MapDatabaseAccess
       operationId: postIsnSpecificRecord
@@ -4050,10 +4393,8 @@ paths:
       description: Delete a record of Map definition
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - MapDatabaseAccess
       operationId: deleteIsnSpecificRecord
@@ -4085,10 +4426,8 @@ paths:
       description: Retrieves a field of a specific ISN of a Map definition
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - MapDatabaseAccess
       operationId: getMapRecordsFields
@@ -4136,10 +4475,8 @@ paths:
       description: Retrieves metadata of a Map definition
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - MapDatabaseAccess
       operationId: getMapMetadata
@@ -4166,10 +4503,8 @@ paths:
       description: Retrieves all fields of an Adabas file
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - ClassicDatabaseAccess
       operationId: getFields
@@ -4201,10 +4536,8 @@ paths:
       description: Retrieves a list of jobs known by Adabas Interface.
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Scheduler
       parameters:
@@ -4235,11 +4568,9 @@ paths:
       description: Create a new Job database
       consumes:
         - application/json
-        - application/xml
         - text/plain
       produces:
         - application/json
-        - application/xml
       tags:
         - Scheduler
       operationId: postJob
@@ -4273,10 +4604,8 @@ paths:
       description: Retrieves a list of active job names known by Adabas Interface.
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Scheduler
       operationId: getJobsIndex
@@ -4299,10 +4628,8 @@ paths:
       description: Retrieves a job definition
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Scheduler
       operationId: getJob
@@ -4314,7 +4641,7 @@ paths:
           required: true
       responses:
         "200":
-          description: "Successful response, with list of known databases."
+          description: "Successful response, with list of given job/task."
           schema:
             $ref: "#/definitions/JobParameter"
         "400":
@@ -4336,10 +4663,8 @@ paths:
       description: Schedule a already defined Job
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Scheduler
       operationId: scheduleJob
@@ -4351,7 +4676,42 @@ paths:
           required: true
       responses:
         "200":
-          description: "Successful response, with new Adabas databases created "
+          description: "Successful response, with new Job/Task created "
+          schema:
+            $ref: "#/definitions/JobStatusResponse"
+        "400":
+          description: Environment evaluation error
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
+        "404":
+          description: Error creating Adabas database
+          schema:
+            $ref: "#/definitions/Error"
+    post:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: Update a already defined Job
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Scheduler
+      operationId: updateJob
+      parameters:
+        - type: string
+          description: Job Name to be requested
+          name: jobName
+          in: path
+          required: true
+      responses:
+        "200":
+          description: "Successful response, with update of Job done "
           schema:
             $ref: "#/definitions/JobStatusResponse"
         "400":
@@ -4409,10 +4769,8 @@ paths:
       description: Retrieves a job definition
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Scheduler
       operationId: getJobName
@@ -4446,10 +4804,8 @@ paths:
       description: Schedule a already defined Job
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Scheduler
       operationId: scheduleJobs
@@ -4519,10 +4875,8 @@ paths:
       description: Retrieves a full job definition
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Scheduler
       operationId: getJobFull
@@ -4549,6 +4903,42 @@ paths:
           description: Database not available/unknown
           schema:
             $ref: "#/definitions/Error"
+  "/scheduler/job/{jobName}/full":
+    get:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: Retrieves a full job definition
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Scheduler
+      operationId: getJobFullInfo
+      parameters:
+        - type: string
+          description: Job Name to be requested
+          name: jobName
+          in: path
+          required: true
+      responses:
+        "200":
+          description: "Successful response, with list of known databases."
+          schema:
+            $ref: "#/definitions/JobFull"
+        "400":
+          description: Environment evaluation error
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
+        "404":
+          description: Database not available/unknown
+          schema:
+            $ref: "#/definitions/Error"
   "/scheduler/jobs/{jobName}/result":
     get:
       security:
@@ -4557,10 +4947,8 @@ paths:
       description: Retrieves all job results
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Scheduler
       operationId: getJobResults
@@ -4604,10 +4992,8 @@ paths:
       description: Delete a specific job result
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Scheduler
       operationId: deleteJobResult
@@ -4647,10 +5033,8 @@ paths:
       description: Retrieves a specific job result
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Scheduler
       operationId: getJobResult
@@ -4689,10 +5073,8 @@ paths:
       description: Delete a specific job result
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Scheduler
       operationId: deleteJobsResult
@@ -4732,10 +5114,8 @@ paths:
       description: Retrieves a specific job result
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Scheduler
       operationId: getJobExecutionResultRange
@@ -4781,10 +5161,8 @@ paths:
       description: Retrieves a specific job result
       consumes:
         - application/json
-        - application/xml
       produces:
         - application/json
-        - application/xml
       tags:
         - Scheduler
       operationId: getJobExecutionResult
@@ -4938,6 +5316,108 @@ paths:
           description: Database not available/unknown
           schema:
             $ref: "#/definitions/Error"
+  "/redirect/{name}":
+    get:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: redirect to remote cluster entry
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Proxy
+      operationId: getProxyRedirect
+      parameters:
+        - name: name
+          in: path
+          description: name of the node
+          required: true
+          type: string
+        - name: x
+          in: query
+          description: destination path
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Database error evaluating list
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
+    put:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: Store configuration
+      consumes:
+        - application/json
+        - text/plain
+      produces:
+        - application/json
+      tags:
+        - Proxy
+      operationId: putProxyRedirect
+      parameters:
+        - name: name
+          in: path
+          description: name of the node
+          required: true
+          type: string
+        - name: x
+          in: query
+          description: destination path
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Database error evaluating list
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
+    post:
+      security:
+        - BasicAuth: []
+        - hasRole: [admin]
+      description: Store configuration
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Proxy
+      operationId: postProxyRedirect
+      parameters:
+        - name: name
+          in: path
+          description: name of the node
+          required: true
+          type: string
+        - name: x
+          in: query
+          description: destination path
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Database error evaluating list
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authorization error
+        "403":
+          description: Role access denied
 definitions:
   Server:
     type: object
@@ -5642,6 +6122,8 @@ definitions:
           $ref: "#/definitions/Container"
       Dbid:
         type: integer
+      StructureLevel:
+        type: integer
       LoadDemo:
         type: boolean
       Name:
@@ -5650,6 +6132,18 @@ definitions:
         type: integer
       UserFile:
         type: integer
+      Encryption:
+        type: boolean
+      KMSTarget:
+        type: string
+        enum:
+          - AWS
+          - file
+      EncryptAlgorithm:
+        type: string
+        enum:
+          - AES_128_XTS
+          - AES_256_XTS
   DatabaseCheckpoints:
     type: object
     properties:
@@ -5682,6 +6176,13 @@ definitions:
             format: date-time
           Dbid:
             type: integer
+          Encrypted:
+            type: boolean
+            x-omitempty: false
+          EncryptAlgorithm:
+            type: string
+          EncryptKMSTarget:
+            type: string
           ETDataFile:
             type: integer
           ExtentRABNASSOArray:
@@ -5706,10 +6207,13 @@ definitions:
             type: string
           PLOGCount:
             type: integer
+            x-omitempty: false
           PLOGExtent:
             type: integer
           RBACSystemFile:
             type: integer
+          RBACSecurity:
+            type: string
           ReplicationCommandFile:
             type: integer
           ReplicationMetadataFile:
@@ -5807,6 +6311,8 @@ definitions:
             type: string
           message:
             type: string
+          target:
+            type: string
   Executions:
     type: object
     properties:
@@ -5821,6 +6327,8 @@ definitions:
       Id:
         type: integer
       Log:
+        type: string
+      StartedBy:
         type: string
       Scheduled:
         type: string
@@ -6133,8 +6641,10 @@ definitions:
     properties:
       Flags:
         type: string
+        x-omitempty: false
       Format:
         type: string
+        x-omitempty: false
       Length:
         type: integer
         x-omitempty: false
@@ -6149,6 +6659,18 @@ definitions:
         x-nullable: true
       Type:
         type: string
+      CollationAttribute:
+        type: string
+      CollationParent:
+        type: string
+      ForeignField:
+        type: string
+      ReferentialFile:
+        type: integer
+      PrimaryField:
+        type: string
+      ReferentialType:
+        type: string
   File:
     type: object
     properties:
@@ -6162,6 +6684,7 @@ definitions:
         type: string
       Size:
         type: integer
+        x-omitempty: false
       Type:
         type: string
   FileInfo:
@@ -6233,77 +6756,101 @@ definitions:
             $ref: "#/definitions/HighWaterEntries"
           AttachedBufferSize:
             type: integer
+            x-omitempty: false
           APUHighWaterMark:
             $ref: "#/definitions/HighWaterEntries"
           APUSize:
             type: integer
+            x-omitempty: false
           BufferpoolHighWaterMark:
             $ref: "#/definitions/HighWaterEntries"
           BufferpoolSize:
             type: integer
+            x-omitempty: false
           ClientQueueHighWaterMark:
             $ref: "#/definitions/HighWaterEntries"
           ClientQueueSize:
             type: integer
+            x-omitempty: false
           CommandQueueHighWaterMark:
             $ref: "#/definitions/HighWaterEntries"
           CommandQueueSize:
             type: integer
+            x-omitempty: false
           ComplexSearchHighWaterMark:
             $ref: "#/definitions/HighWaterEntries"
           GroupCommitHighWaterMark:
             $ref: "#/definitions/HighWaterEntries"
           GroupCommitSize:
             type: integer
+            x-omitempty: false
           HQUserLimitHighWaterMark:
             $ref: "#/definitions/HighWaterEntries"
           HQUserLimitSize:
             type: integer
+            x-omitempty: false
           HoldQueueHighWaterMark:
             $ref: "#/definitions/HighWaterEntries"
           HoldQueueSize:
             type: integer
+            x-omitempty: false
           IsnSortHighWaterMark:
             $ref: "#/definitions/HighWaterEntries"
           LABXHighWaterMark:
             $ref: "#/definitions/HighWaterEntries"
           LABXSize:
             type: integer
+            x-omitempty: false
           LPXAHighWaterMark:
             $ref: "#/definitions/HighWaterEntries"
           LPXASize:
             type: integer
+            x-omitempty: false
           LWOHighWaterMark:
             $ref: "#/definitions/HighWaterEntries"
           LWOSize:
             type: integer
+            x-omitempty: false
           NucleusStartTime:
             type: string
             format: date-time
+            x-omitempty: false
           ProtectionAreaActiveHighWaterMark:
             $ref: "#/definitions/HighWaterEntries"
           ProtectionAreaActiveSize:
             type: integer
+            x-omitempty: false
           ProtectionAreaSize:
             type: integer
+            x-omitempty: false
           SortAreaSize:
             type: integer
+            x-omitempty: false
+          TCPATBSize:
+            type: integer
+            x-omitempty: false
+          TCPATBHighWaterMark:
+            $ref: "#/definitions/HighWaterEntries"
           ThreadSize:
             type: integer
+            x-omitempty: false
           ThreadsHighWaterMark:
             $ref: "#/definitions/HighWaterEntries"
           TransactionTimeHighWaterMark:
             $ref: "#/definitions/HighWaterEntries"
           TransactionTimeSize:
             type: integer
+            x-omitempty: false
           UserQueueHighWaterMark:
             $ref: "#/definitions/HighWaterEntries"
           UserQueueSize:
             type: integer
+            x-omitempty: false
           WorkpoolHighWaterMark:
             $ref: "#/definitions/HighWaterEntries"
           WorkpoolSize:
             type: integer
+            x-omitempty: false
   Handler:
     type: object
     properties:
@@ -6327,14 +6874,15 @@ definitions:
     properties:
       high:
         type: integer
-        x-isnullable: false
+        x-nullable: false
       inuse:
         type: integer
-        x-isnullable: false
+        x-nullable: false
       time:
         type: string
         format: date-time
-        x-isnullable: false
+        x-nullable: true
+        x-omitempty: false
   HoldQueue:
     type: object
     properties:
@@ -6388,6 +6936,8 @@ definitions:
         type: string
       Utility:
         type: string
+      CronSchedule:
+        type: string
   JobInformation:
     type: object
     properties:
@@ -6406,6 +6956,11 @@ definitions:
         $ref: "#/definitions/Job"
       Status:
         type: string
+  JobFull:
+    type: object
+    properties:
+      Job:
+        $ref: "#/definitions/JobDefinition"
   JobDescription:
     type: object
     properties:
@@ -6627,8 +7182,17 @@ definitions:
       Log:
         type: object
         properties:
+          Name:
+            type: string
           Log:
             type: string
+  NucleusLogList:
+    type: object
+    properties:
+      NucleusLogs:
+        type: array
+        items:
+          type: string
   OnlineDatabase:
     type: object
     properties:
@@ -6893,6 +7457,73 @@ definitions:
         type: array
         items:
           type: integer
+  PLOG:
+    type: object
+    properties:
+      PLOG:
+        type: object
+        properties:
+          Time:
+            type: string
+            format: date-time
+          Duration:
+            type: string
+          UsedSpace:
+            type: integer
+          TotalSpace:
+            type: integer
+          SectorSize:
+            type: integer
+          LogNr:
+            type: integer
+          EnvironmentCount:
+            type: integer
+          ExtensionNr:
+            type: integer
+          DeviceCount:
+            type: integer
+          Flags:
+            type: string
+          UEX2:
+            type: string
+          Device:
+            type: string
+          CurrentName:
+            type: string
+  RBAC:
+    type: object
+    properties:
+      RBAC:
+        type: array
+        items:
+          $ref: "#/definitions/RBACEntry"
+  RBACEntry:
+    type: object
+    properties:
+      Operation:
+        type: string
+      Object:
+        type: string
+      User:
+        type: string
+      Role:
+        type: string
+      Assignment:
+        type: string
+  RBACResource:
+    type: object
+    properties:
+      Resource:
+        type: string
+      Name:
+        type: string
+  RBACDefinition:
+    type: object
+    properties:
+      Definition:
+        type: array
+        items:
+          $ref: "#/definitions/RBACEntry"
   TCP:
     type: object
     properties:
@@ -7164,10 +7795,9 @@ definitions:
           Content:
             type: string
       JobStore:
-        type: object
-        properties:
-          config:
-            type: string
+        $ref: "#/definitions/JobStore"
+      Cluster:
+        $ref: "#/definitions/ClusterConfig"
       Mapping:
         type: object
         properties:
@@ -7222,6 +7852,13 @@ definitions:
             type: array
             items:
               $ref: "#/definitions/DatabaseConfig"
+  JobStore:
+    type: object
+    properties:
+      config:
+        type: string
+      Database:
+        $ref: "#/definitions/DatabaseConfig"
   DatabaseConfig:
     type: object
     properties:
@@ -7235,6 +7872,20 @@ definitions:
       deleted:
         type: boolean
         default: false
+  ClusterConfig:
+    type: object
+    properties:
+      Nodes:
+        type: array
+        items:
+          type: object
+          properties:           
+            Name:
+              type: string
+            Web:
+              type: string
+            Group:
+              type: string
   Cluster:
     type: object
     properties:

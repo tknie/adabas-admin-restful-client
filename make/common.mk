@@ -1,5 +1,5 @@
 #
-# Copyright © 2018-2019 Software AG, Darmstadt, Germany and/or its licensors
+# Copyright © 2018-2022 Software AG, Darmstadt, Germany and/or its licensors
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -19,11 +19,13 @@
 PKGS        = $(or $(PKG),$(shell cd $(CURDIR) && env $(GO) list ./... | grep -v "^vendor/"))
 TESTPKGS    = $(shell env $(GO) list -f '{{ if or .TestGoFiles .XTestGoFiles }}{{ .ImportPath }}{{ end }}' $(PKGS))
 GO_FLAGS    = $(if $(debug),"-x",)
-GO      = go
-GODOC   = godoc
-GOARCH   ?= $(shell $(GO) env GOARCH)
-GOOS     ?= $(shell $(GO) env GOOS)
-TIMEOUT = 2000
+GO          = go
+GODOC       = godoc
+GOPATH     ?= $(shell $(GO) env GOPATH)
+GOARCH     ?= $(shell $(GO) env GOARCH)
+GOOS       ?= $(shell $(GO) env GOOS)
+TIMEOUT     = 2000
+GOBIN      ?= $(if $(shell $(GO) env GOBIN),$(shell $(GO) env GOBIN),$(GOPATH)/bin)
 V = 0
 Q = $(if $(filter 1,$V),,@)
 M = $(shell printf "\033[34;1m▶\033[0m")
@@ -75,12 +77,17 @@ $(BINTOOLS)/%: ; $(info $(M) building tool $(BINTOOLS) on $(REPOSITORY)…)
 		(GOPATH=$$tmp go clean -modcache ./...); \
 		rm -rf $$tmp ; exit $$ret
 
-# Tools
-GOSWAGGER = $(BINTOOLS)/swagger
-$(BINTOOLS)/swagger: REPOSITORY=github.com/go-swagger/go-swagger/cmd/swagger
+$(GOBIN)/%: ; $(info $(M) building binary $(TOOL) on $(REPOSITORY)…)
+	$Q tmp=$$(mktemp -d); cd $$tmp; \
+	CGO_CFLAGS= CGO_LDFLAGS= $(GO) install $(REPOSITORY) || ret=$$?; \
+	rm -rf $$tmp ; exit $$ret
 
-GOLINT = $(BIN)/golint
-$(BIN)/golint: REPOSITORY=golang.org/x/lint/golint
+# Tools
+GOSWAGGER = $(GOBIN)/swagger
+$(GOBIN)/swagger: REPOSITORY=github.com/go-swagger/go-swagger/cmd/swagger
+
+GOLINT = $(GOBIN)/golint
+$(GOBIN)/golint: REPOSITORY=golang.org/x/lint/golint
 
 GOCOVMERGE = $(BIN)/gocovmerge
 $(BIN)/gocovmerge: REPOSITORY=github.com/wadey/gocovmerge

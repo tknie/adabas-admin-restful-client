@@ -1,1 +1,1 @@
-{"Job":{"User":"RTK","Name":"goadminbackup","Description":"GO Administration test creating job","Utility":"ADABCK","Scripts":"","Parameters":[{"Parameter":"db=24"},  {"Parameter":"dump=*"}],"Environments":[],"CronScheduler":"(null)"}}
+{"Job":{"User":"RTK","Name":"goadminbackup","Description":"GO Administration test creating job","Utility":"ADABCK","Scripts":"","Parameters":[{"Parameter":"db=24"},  {"Parameter":"dump=*"}],"Environments":[{"Parameter":"BCK001=abc.${ADA_JOB_TIME}.bck"}],"CronScheduler":"(null)"}}

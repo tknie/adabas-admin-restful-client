@@ -1,5 +1,5 @@
 /*
-* Copyright © 2018 Software AG, Darmstadt, Germany and/or its licensors
+* Copyright © 2018-2022 Software AG, Darmstadt, Germany and/or its licensors
 *
 * SPDX-License-Identifier: Apache-2.0
 *
@@ -66,7 +66,7 @@ func List(clientInstance *client.AdabasAdmin, param string, auth runtime.ClientA
 		return fmt.Errorf("Need to be of format: <location>:<reference>")
 	}
 	params.Location = p[0]
-	params.File = p[1]
+	params.File = &p[1]
 	resp, err := clientInstance.Browser.Browse(params, auth)
 	if err != nil {
 		switch err.(type) {

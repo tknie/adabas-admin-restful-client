@@ -1,5 +1,5 @@
 /*
-* Copyright © 2018 Software AG, Darmstadt, Germany and/or its licensors
+* Copyright © 2018-2022 Software AG, Darmstadt, Germany and/or its licensors
 *
 * SPDX-License-Identifier: Apache-2.0
 *
@@ -124,7 +124,7 @@ func DeleteExecution(clientInstance *client.AdabasAdmin, param string, auth runt
 	return nil
 }
 
-// Create nre job using job definition file
+// Create a job using job definition file
 func Create(clientInstance *client.AdabasAdmin, input string, auth runtime.ClientAuthInfoWriter) error {
 	params := scheduler.NewPostJobParams()
 	raw, err := ioutil.ReadFile(input)

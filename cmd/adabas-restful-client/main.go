@@ -1,5 +1,5 @@
 /*
-* Copyright © 2018 Software AG, Darmstadt, Germany and/or its licensors
+* Copyright © 2018-2022 Software AG, Darmstadt, Germany and/or its licensors
 *
 * SPDX-License-Identifier: Apache-2.0
 *
@@ -69,6 +69,7 @@ const (
 	parameterinfo
 	setparameter
 	nucleuslog
+	listnucleuslog
 	files
 	file
 	deletefile
@@ -133,6 +134,7 @@ var displayName = []displayInfo{
 	displayInfo{id: parameterinfo, cmdShort: "parameterinfo", cmdDescription: "List database parameter information with minimum and maximum ranges"},
 	displayInfo{id: setparameter, cmdShort: "setparameter", cmdDescription: "Set database parameter"},
 	displayInfo{id: nucleuslog, cmdShort: "nucleuslog", cmdDescription: "Display Adabas nucleus log"},
+	displayInfo{id: listnucleuslog, cmdShort: "listnucleuslog", cmdDescription: "List all Adabas nucleus logs of an database"},
 	displayInfo{id: files, cmdShort: "files", cmdDescription: "Display Adabas file list"},
 	displayInfo{id: file, cmdShort: "file", cmdDescription: "Display Adabas file"},
 	displayInfo{id: deletefile, cmdShort: "deletefile", cmdDescription: "Delete Adabas file"},
@@ -365,7 +367,9 @@ func main() {
 			case setparameter:
 				err = database.SetParameter(clientInstance, *dbid, *param, auth)
 			case nucleuslog:
-				err = database.NucleusLog(clientInstance, *dbid, auth)
+				err = database.NucleusLog(clientInstance, *dbid, *param, auth)
+			case listnucleuslog:
+				err = database.ListNucleusLog(clientInstance, *dbid, auth)
 			case files:
 				err = database.Files(clientInstance, *dbid, auth)
 			case file:

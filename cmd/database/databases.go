@@ -1,5 +1,5 @@
 /*
-* Copyright © 2018 Software AG, Darmstadt, Germany and/or its licensors
+* Copyright © 2018-2022 Software AG, Darmstadt, Germany and/or its licensors
 *
 * SPDX-License-Identifier: Apache-2.0
 *
@@ -228,7 +228,7 @@ func Delete(clientInstance *client.AdabasAdmin, dbid int, input string, auth run
 func Rename(clientInstance *client.AdabasAdmin, dbid int, param string, auth runtime.ClientAuthInfoWriter) error {
 	params := online_offline.NewPutDatabaseResourceParams()
 	params.DbidOperation = strconv.Itoa(dbid)
-	params.Name = param
+	params.Name = &param
 	resp, acpt, err := clientInstance.OnlineOffline.PutDatabaseResource(params, auth)
 	if err != nil {
 		switch err.(type) {
@@ -257,10 +257,27 @@ func Rename(clientInstance *client.AdabasAdmin, dbid int, param string, auth run
 }
 
 // NucleusLog show nucleus log
-func NucleusLog(clientInstance *client.AdabasAdmin, dbid int, auth runtime.ClientAuthInfoWriter) error {
+func NucleusLog(clientInstance *client.AdabasAdmin, dbid int, param string, auth runtime.ClientAuthInfoWriter) error {
 	params := online_offline.NewGetDatabaseNucleusLogParams()
 	params.Dbid = strconv.Itoa(dbid)
-	resp, err := clientInstance.OnlineOffline.GetDatabaseNucleusLog(params, auth)
+	if param == "" {
+		resp, _, err := clientInstance.OnlineOffline.GetDatabaseNucleusLog(params, auth)
+		if err != nil {
+			switch err.(type) {
+			case *online_offline.GetDatabaseNucleusLogBadRequest:
+				response := err.(*online_offline.GetDatabaseNucleusLogBadRequest)
+				fmt.Println(response.Payload.Error.Code, ":", response.Payload.Error.Message)
+			default:
+				fmt.Println("Error:", err)
+			}
+			return err
+		}
+		fmt.Printf("\nDatabase %03d Nucleus log:\n", dbid)
+		fmt.Println(resp.Payload.Log.Log)
+		return nil
+	}
+	params.Name = &param
+	resp, _, err := clientInstance.OnlineOffline.GetDatabaseNucleusLog(params, auth)
 	if err != nil {
 		switch err.(type) {
 		case *online_offline.GetDatabaseNucleusLogBadRequest:
@@ -271,9 +288,32 @@ func NucleusLog(clientInstance *client.AdabasAdmin, dbid int, auth runtime.Clien
 		}
 		return err
 	}
-
 	fmt.Printf("\nDatabase %03d Nucleus log:\n", dbid)
 	fmt.Println(resp.Payload.Log.Log)
+	return nil
+}
+
+// ListNucleusLog list nucleus log
+func ListNucleusLog(clientInstance *client.AdabasAdmin, dbid int, auth runtime.ClientAuthInfoWriter) error {
+	params := online_offline.NewGetDatabaseNucleusLogParams()
+	b := true
+	params.List = &b
+	params.Dbid = strconv.Itoa(dbid)
+	_, resp, err := clientInstance.OnlineOffline.GetDatabaseNucleusLog(params, auth)
+	if err != nil {
+		switch err.(type) {
+		case *online_offline.GetDatabaseNucleusLogBadRequest:
+			response := err.(*online_offline.GetDatabaseNucleusLogBadRequest)
+			fmt.Println(response.Payload.Error.Code, ":", response.Payload.Error.Message)
+		default:
+			fmt.Println("Error:", err)
+		}
+		return err
+	}
+	fmt.Printf("\nDatabase %03d List of Nucleus logs:\n", dbid)
+	for _, n := range resp.Payload.NucleusLogs {
+		fmt.Println("  ", n)
+	}
 	return nil
 }
 
